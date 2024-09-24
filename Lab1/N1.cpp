@@ -4,8 +4,6 @@
 #include <random>
 using namespace std;
 using namespace std::chrono;
-
-// N ahora es una variable global que puede ser modificada fácilmente
 const int N = 1000;
 
 void multiplyMatrixByRows(const vector<vector<double>>& a, const vector<double>& X, vector<double>& Y) {

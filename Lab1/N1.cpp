@@ -5,7 +5,6 @@
 using namespace std;
 using namespace std::chrono;
 const int N = 1000;
-
 void multiplyMatrixByRows(const vector<vector<double>>& a, const vector<double>& X, vector<double>& Y) {
     for(int i = 0; i < N; i++){
         for(int j = 0; j < N; j++){
@@ -13,7 +12,6 @@ void multiplyMatrixByRows(const vector<vector<double>>& a, const vector<double>&
         }
     }
 }
-
 void multiplyMatrixByColumns(const vector<vector<double>>& a, const vector<double>& X, vector<double>& Y) {
     for(int j = 0; j < N; j++){
         for(int i = 0; i < N; i++){
@@ -21,12 +19,9 @@ void multiplyMatrixByColumns(const vector<vector<double>>& a, const vector<doubl
         }
     }
 }
-
 void resetVector(vector<double>& Y) {
     fill(Y.begin(), Y.end(), 0.0);
 }
-
-// Función para inicializar una matriz o vector con valores aleatorios
 void initializeRandom(vector<vector<double>>& matrix) {
     random_device rd;
     mt19937 gen(rd());
@@ -38,7 +33,6 @@ void initializeRandom(vector<vector<double>>& matrix) {
         }
     }
 }
-
 void initializeRandom(vector<double>& vec) {
     random_device rd;
     mt19937 gen(rd());
@@ -54,14 +48,10 @@ int main(){
     vector<vector<double>> a(N, vector<double>(N));
     vector<double> X(N);
     vector<double> Y(N, 0.0);
-
-    // Inicialización aleatoria
     initializeRandom(a);
     initializeRandom(X);
-
     // Numero de iteraciones
     const int itN = 1;
-
     auto start = high_resolution_clock::now();
     for (int i = 0; i < itN; i++) {
         resetVector(Y);

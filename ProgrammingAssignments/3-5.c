@@ -23,6 +23,7 @@ int main(void) {
     // Process 0 reads matrix size
     if (my_rank == 0) {
         printf("Enter matrix order n: ");
+        fflush(stdout);
         scanf("%d", &n);
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -40,6 +41,7 @@ int main(void) {
     // Read and distribute vector
     if (my_rank == 0) {
         printf("Enter the vector:\n");
+        fflush(stdout);
         for (int i = 0; i < n; i++)
             scanf("%lf", &x[i]);
     }

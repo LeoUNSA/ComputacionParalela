@@ -3,9 +3,8 @@
 #include <string.h>
 #include <mpi.h>
 
-void Read_matrix(char* prompt, double local_A[], int local_n, int n, int my_rank, int comm_sz);
-void Read_vector(char* prompt, double x[], int n, int my_rank);
-void Print_vector(char* title, double y[], int n);
+void Read_matrix(char* prompt, double local_A[], int local_n, int n, int my_rank);
+void Print_vector(char* title, double local_y[], int local_n, int n, int my_rank);
 
 int main(void) {
     int my_rank, comm_sz;
@@ -19,7 +18,6 @@ int main(void) {
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 
-    // Process 0 reads n and broadcasts it
     if (my_rank == 0) {
         printf("Enter matrix order n: ");
         fflush(stdout);
@@ -29,7 +27,7 @@ int main(void) {
     local_n = n / comm_sz;
 
     // Allocate memory
-    local_A = (double*)malloc(n * local_n * sizeof(double));
+    local_A = (double*)malloc(local_n * n * sizeof(double));
     local_x = (double*)malloc(n * sizeof(double));
     local_y = (double*)malloc(local_n * sizeof(double));
     
@@ -38,9 +36,9 @@ int main(void) {
     }
 
     // Read and distribute matrix
-    Read_matrix("Enter the matrix", local_A, local_n, n, my_rank, comm_sz);
+    Read_matrix("Enter the matrix:", local_A, local_n, n, my_rank);
     
-    // Read and broadcast vector
+    // Read and distribute vector
     if (my_rank == 0) {
         printf("Enter the vector:\n");
         fflush(stdout);
@@ -84,7 +82,10 @@ int main(void) {
     return 0;
 }
 
-void Read_matrix(char* prompt, double local_A[], int local_n, int n, int my_rank, int comm_sz) {
+void Read_matrix(char* prompt, double local_A[], int local_n, int n, int my_rank) {
+    int comm_sz;
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
+
     double* temp = NULL;
     if (my_rank == 0) {
         temp = (double*)malloc(n * n * sizeof(double));
@@ -96,8 +97,8 @@ void Read_matrix(char* prompt, double local_A[], int local_n, int n, int my_rank
         }
     }
 
-    // Scatter the matrix by rows
-    MPI_Scatter(temp, n * local_n, MPI_DOUBLE, local_A, n * local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    // Scatter rows of the matrix
+    MPI_Scatter(temp, local_n * n, MPI_DOUBLE, local_A, local_n * n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0) {
         free(temp);
